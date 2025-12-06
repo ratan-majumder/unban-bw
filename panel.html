@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>FF ID Unban Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Particle JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+<style>
+body {
+    margin:0;
+    font-family: 'Courier New', monospace;
+    background: #000;
+    color: #00ff55;
+    overflow-x:hidden;
+}
+
+/* Particle background */
+#particles-js {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    z-index: -1;
+}
+
+.container {
+    width:100%; max-width:800px;
+    background:rgba(17,17,17,0.9);
+    border-radius:12px;
+    padding:20px;
+    margin:30px auto;
+    box-shadow:0 0 25px #00ff55;
+    backdrop-filter:blur(4px);
+}
+
+h2 {
+    text-align:center;
+    margin-bottom:20px;
+    color:#00ff55;
+    text-shadow:0 0 15px #00ff55;
+    font-size:28px;
+}
+
+.input-box, .select-box, .btn {
+    width:100%; margin:10px 0;
+    padding:12px;
+    border-radius:8px; border:none;
+    font-size:16px;
+}
+.input-box, .select-box {
+    background:#222;
+    color:#00ff55; 
+    border:1px solid #00ff55;
+}
+.btn {
+    background:#00ff55;
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 0 10px #00ff55;
+    transition:0.2s;
+}
+.btn:hover {
+    background:#0aff0a;
+    box-shadow:0 0 25px #00ff55;
+}
+
+/* Terminal Box */
+.terminal {
+    background:#000;
+    border:1px solid #00ff55;
+    padding:15px;
+    border-radius:10px;
+    height:250px;
+    overflow-y:auto;
+    margin-top:15px;
+    font-size:14px;
+    box-shadow:inset 0 0 10px #00ff55;
+}
+
+.terminal p {
+    margin:2px 0;
+    color:#00ff55;
+    animation: glow 0.5s ease;
+}
+@keyframes glow {
+    from { text-shadow:0 0 15px #00ff55; }
+    to { text-shadow:none; }
+}
+
+/* Success Popup Box */
+.success-box {
+    width:100%;
+    background:#002f0a;
+    border:1px solid #00ff55;
+    padding:15px;
+    color:#00ff55;
+    font-size:18px;
+    border-radius:10px;
+    margin-top:20px;
+    display:none;
+    animation: pop 0.4s ease;
+}
+@keyframes pop {
+    from { transform:scale(0.6); opacity:0; }
+    to { transform:scale(1); opacity:1; }
+}
+</style>
+</head>
+<body>
+
+<!-- Particle Background -->
+<div id="particles-js"></div>
+
+<!-- Main Panel -->
+<div class="container">
+<h2>🎮 FF ID Unban Panel</h2>
+
+<input id="uid" class="input-box" placeholder="Enter UID (e.g. 123456789)">
+<input id="nic" class="input-box" placeholder="Enter NIC / Name">
+
+<select id="server" class="select-box">
+    <option value="BD">Bangladesh</option>
+    <option value="IND">India</option>
+    <option value="PK">Pakistan</option>
+    <option value="BRSL">Brasil</option>
+    <option value="MENA">MENA</option>
+</select>
+
+<button class="btn" onclick="startUnban()">Unban</button>
+
+<div class="terminal" id="terminalBox"></div>
+
+<div id="successBox" class="success-box"></div>
+
+</div>
+
+<!-- Hacking Sound -->
+<audio id="hackSound">
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_8b04fa6a08.mp3?filename=hacking-ambient-110397.mp3">
+</audio>
+
+<script>
+// =============================
+// UNBAN PROCESS SIMULATION
+// =============================
+function startUnban(){
+    const uid = document.getElementById('uid').value.trim();
+    const nic = document.getElementById('nic').value.trim();
+    const server = document.getElementById('server').value;
+    const terminal = document.getElementById('terminalBox');
+    const successBox = document.getElementById('successBox');
+    const sound = document.getElementById('hackSound');
+
+    if(!uid || !nic){ 
+        alert('UID এবং NIC পূরণ করুন'); 
+        return; 
+    }
+
+    terminal.innerHTML = "";
+    successBox.style.display = "none";
+
+    sound.currentTime = 0;
+    sound.play();
+
+    let count = 0;
+    const maxCount = Math.floor(Math.random()*6) + 20;
+
+    const interval = setInterval(()=>{
+        count++;
+        const p = document.createElement('p');
+        p.textContent = `Unban requesting = ${uid} [${server}] attempt ${count}`;
+        terminal.appendChild(p);
+        terminal.scrollTop = terminal.scrollHeight;
+
+        if(count >= maxCount){
+            clearInterval(interval);
+
+            setTimeout(()=>{
+                successBox.style.display = "block";
+                successBox.innerHTML = `✅ Unban Complete for UID *Wait 10 minin and login*: <b>${uid}</b><br>Server: ${server}`;
+            },300);
+        }
+    },150);
+}
+
+
+// =============================
+// PARTICLE BACKGROUND CONFIG
+// =============================
+particlesJS("particles-js", {
+  "particles": {
+    "number": { "value": 120 },
+    "color": { "value": "#00ff55" },
+    "shape": { "type": "circle" },
+    "opacity": { "value": 0.5 },
+    "size": { "value": 3 },
+    "line_linked": {
+      "enable": true,
+      "distance": 120,
+      "color": "#00ff55",
+      "opacity": 0.4,
+      "width": 1
+    },
+    "move": { "speed": 2 }
+  }
+});
+</script>
+
+</body>
+</html>
