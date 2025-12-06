@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8" />
+<title>Ratan Panel - Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+    margin: 0;
+    background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+    color: white;
+    font-family: Arial, sans-serif;
+    display:flex; align-items:center; justify-content:center; height:100vh;
+}
+.login-box {
+    background:#111; padding:30px; border-radius:12px; box-shadow:0 0 20px #00eaff;
+    text-align:center; width:90%; max-width:400px;
+}
+.login-box h2 { margin-bottom:20px; color:#00eaff; text-shadow:0 0 8px #00eaff; }
+.login-box input {
+    width:100%; padding:12px; margin:10px 0; border:none; border-radius:8px; background:#222; color:#00eaff;
+}
+.login-box button {
+    width:100%; padding:12px; border:none; border-radius:8px; background:#00eaff; color:#000; font-weight:bold; cursor:pointer;
+}
+.login-box button:hover { background:#00ddff; }
+#error { color:red; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<div class="login-box">
+    <h2>🎮 FF ID UNBAN PANEL </h2>
+    <input id="loginUser" placeholder="Username">
+    <input id="loginPass" type="password" placeholder="Password">
+    <button onclick="doLogin()">লগইন করুন</button>
+    <div id="error"></div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBOcA7LyCU-zNlVj13DQcZKD-ImdD7paOI",
+  authDomain: "balh-1d419.firebaseapp.com",
+  databaseURL: "https://balh-1d419-default-rtdb.firebaseio.com",
+  projectId: "balh-1d419",
+  storageBucket: "balh-1d419.firebasestorage.app",
+  messagingSenderId: "1036597182312",
+  appId: "1:1036597182312:web:749f9d6c30f200720f60dd",
+  measurementId: "G-S2LZZ28SYN"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+function genSession(){ return Math.random().toString(36).substring(2)+Date.now().toString(36); }
+
+window.doLogin = async function(){
+    const username = document.getElementById('loginUser').value.trim();
+    const password = document.getElementById('loginPass').value.trim();
+    const errorDiv = document.getElementById('error');
+    errorDiv.innerText = '';
+
+    if(!username || !password){ errorDiv.innerText="সব তথ্য পূরণ করুন"; return; }
+
+    const snap = await get(ref(db,'users'));
+    if(!snap.exists()){ errorDiv.innerText="কোনো ব্যবহারকারী পাওয়া যায়নি"; return; }
+    const users = snap.val();
+
+    let foundId = null, foundUser = null;
+    for(const id in users){ 
+        if(users[id].username===username && users[id].password===password){
+            foundId = id; foundUser = users[id]; break;
+        }
+    }
+
+    if(!foundId){ errorDiv.innerText="ভুল নাম/পাসওয়ার্ড"; return; }
+
+    // Session generate & save
+    const sessionId = genSession();
+    await update(ref(db,'users/'+foundId),{ activeSession: sessionId });
+    localStorage.setItem('ratan_userid', foundId);
+    localStorage.setItem('ratan_session', sessionId);
+
+    // Redirect to Panel page
+    window.location.href = "panel.html";
+};
+</script>
+
+</body>
+</html>
